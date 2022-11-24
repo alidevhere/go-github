@@ -319,6 +319,7 @@ type pullRequestUpdate struct {
 	Body                *string `json:"body,omitempty"`
 	State               *string `json:"state,omitempty"`
 	Base                *string `json:"base,omitempty"`
+	Draft               *bool   `json:"draft,omitempty"`
 	MaintainerCanModify *bool   `json:"maintainer_can_modify,omitempty"`
 }
 
@@ -341,6 +342,7 @@ func (s *PullRequestsService) Edit(ctx context.Context, owner string, repo strin
 		Body:                pull.Body,
 		State:               pull.State,
 		MaintainerCanModify: pull.MaintainerCanModify,
+		Draft:               pull.Draft,
 	}
 	// avoid updating the base branch when closing the Pull Request
 	// - otherwise the GitHub API server returns a "Validation Failed" error:
