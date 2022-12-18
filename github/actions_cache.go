@@ -73,7 +73,6 @@ type ActionsCacheListOptions struct {
 //
 // GitHub API docs: https://docs.github.com/en/rest/actions/cache?apiVersion=2022-11-28#list-github-actions-caches-for-a-repository
 func (s *ActionsService) ListCaches(ctx context.Context, owner, repo string, opts *ActionsCacheListOptions) (*ActionsCacheList, *Response, error) {
-
 	u := fmt.Sprintf("repos/%v/%v/actions/caches", owner, repo)
 	u, err := addOptions(u, opts)
 	if err != nil {
