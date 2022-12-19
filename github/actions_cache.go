@@ -121,7 +121,7 @@ func (s *ActionsService) DeleteCachesByKey(ctx context.Context, owner, repo, key
 //
 // GitHub API docs: https://docs.github.com/en/rest/actions/cache?apiVersion=2022-11-28#delete-a-github-actions-cache-for-a-repository-using-a-cache-id
 func (s *ActionsService) DeleteCachesByID(ctx context.Context, owner, repo string, cacheId int64) (*Response, error) {
-	u := fmt.Sprintf("/repos/%v/%v/actions/caches/%v", owner, repo, cacheId)
+	u := fmt.Sprintf("repos/%v/%v/actions/caches/%v", owner, repo, cacheId)
 	req, err := s.client.NewRequest("DELETE", u, nil)
 	if err != nil {
 		return nil, err
@@ -137,15 +137,18 @@ func (s *ActionsService) DeleteCachesByID(ctx context.Context, owner, repo strin
 //
 // GitHub API docs: https://docs.github.com/en/rest/actions/cache?apiVersion=2022-11-28#get-github-actions-cache-usage-for-a-repository
 func (s *ActionsService) GetCacheUsageForRepo(ctx context.Context, owner, repo string) (*ActionsCacheUsage, *Response, error) {
-	u := fmt.Sprintf("/repos/%v/%v/actions/cache/usage", owner, repo)
+	u := fmt.Sprintf("repos/%v/%v/actions/cache/usage", owner, repo)
 
-	cacheUsage := new(ActionsCacheUsage)
 	req, err := s.client.NewRequest("GET", u, nil)
 
 	if err != nil {
-		return cacheUsage, nil, err
+		return nil, nil, err
 	}
+	cacheUsage := new(ActionsCacheUsage)
 	res, err := s.client.Do(ctx, req, cacheUsage)
+	if err != nil {
+		return nil, res, err
+	}
 	return cacheUsage, res, err
 }
 
@@ -157,19 +160,24 @@ func (s *ActionsService) GetCacheUsageForRepo(ctx context.Context, owner, repo s
 //
 // GitHub API docs: https://docs.github.com/en/rest/actions/cache?apiVersion=2022-11-28#list-repositories-with-github-actions-cache-usage-for-an-organization
 func (s *ActionsService) ListCacheUsageByRepoForOrg(ctx context.Context, org string, opts *ListOptions) (*OrgRepoCacheUsageList, *Response, error) {
-	u := fmt.Sprintf("/orgs/%v/actions/cache/usage-by-repository", org)
+	u := fmt.Sprintf("orgs/%v/actions/cache/usage-by-repository", org)
 	u, err := addOptions(u, opts)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	cacheUsage := new(OrgRepoCacheUsageList)
 	req, err := s.client.NewRequest("GET", u, nil)
 
 	if err != nil {
-		return cacheUsage, nil, err
+		return nil, nil, err
 	}
+	cacheUsage := new(OrgRepoCacheUsageList)
 	res, err := s.client.Do(ctx, req, cacheUsage)
+
+	if err != nil {
+		return nil, res, err
+	}
+
 	return cacheUsage, res, err
 }
 
@@ -181,15 +189,18 @@ func (s *ActionsService) ListCacheUsageByRepoForOrg(ctx context.Context, org str
 //
 // GitHub API docs: https://docs.github.com/en/rest/actions/cache?apiVersion=2022-11-28#get-github-actions-cache-usage-for-an-organization
 func (s *ActionsService) GetCacheUsageForOrg(ctx context.Context, org string) (*CacheUsage, *Response, error) {
-	u := fmt.Sprintf("/orgs/%v/actions/cache/usage", org)
+	u := fmt.Sprintf("orgs/%v/actions/cache/usage", org)
 
-	cacheUsage := new(CacheUsage)
-	req, err := s.client.NewRequest("GET", u, cacheUsage)
+	req, err := s.client.NewRequest("GET", u, nil)
 
 	if err != nil {
-		return cacheUsage, nil, err
+		return nil, nil, err
 	}
+	cacheUsage := new(CacheUsage)
 	res, err := s.client.Do(ctx, req, cacheUsage)
+	if err != nil {
+		return nil, res, err
+	}
 	return cacheUsage, res, err
 }
 
@@ -200,14 +211,19 @@ func (s *ActionsService) GetCacheUsageForOrg(ctx context.Context, org string) (*
 //
 // GitHub API docs: https://docs.github.com/en/rest/actions/cache?apiVersion=2022-11-28#get-github-actions-cache-usage-for-an-enterprise
 func (s *ActionsService) GetCacheUsageForEnterprise(ctx context.Context, enterprise string) (*CacheUsage, *Response, error) {
-	u := fmt.Sprintf("/enterprises/%v/actions/cache/usage", enterprise)
+	u := fmt.Sprintf("enterprises/%v/actions/cache/usage", enterprise)
 
-	cacheUsage := new(CacheUsage)
 	req, err := s.client.NewRequest("GET", u, nil)
 
 	if err != nil {
-		return cacheUsage, nil, err
+		return nil, nil, err
 	}
+
+	cacheUsage := new(CacheUsage)
 	res, err := s.client.Do(ctx, req, cacheUsage)
+
+	if err != nil {
+		return nil, res, err
+	}
 	return cacheUsage, res, err
 }
